@@ -64,6 +64,7 @@ public class MovieDetailsActivity extends AppCompatActivity implements MovieDeta
     private Context mContext;
     private Movie mMovie;
     private ReviewListAdapter adapter;
+    private int selectedDetail;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -93,6 +94,26 @@ public class MovieDetailsActivity extends AppCompatActivity implements MovieDeta
         loadMovieDetails(viewModel.movie.getId());
         loadReviews(viewModel.movie.getId());
         loadVideos(viewModel.movie.getId());
+
+        if(selectedDetail == Constant.DETAIL_SYNOPSIS) {
+            onSynopsisSelected();
+        }
+        else if(selectedDetail == Constant.DETAIL_REVIEW) {
+            onReviewSelected();
+        }
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        outState.putInt(Constant.SELECTED_DETAIL, selectedDetail);
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        if(savedInstanceState == null) return;
+        selectedDetail = savedInstanceState.getInt(Constant.SELECTED_DETAIL);
     }
 
     @Override
@@ -136,16 +157,17 @@ public class MovieDetailsActivity extends AppCompatActivity implements MovieDeta
         tvSynopsisDetail.setText(viewModel.movie.getSynopsis());
         Picasso.with(mContext)
                 .load(PopularMovieApp.API_POSTER_HEADER_LARGE + viewModel.movie.getPoster())
+                .placeholder(R.drawable.ic_sentiment_dissatisfied)
                 .into(ivPoster);
     }
 
-    public void setLayoutManager() {
+    private void setLayoutManager() {
         LinearLayoutManager layoutManager = new LinearLayoutManager(mContext);
         rvReview.setLayoutManager(layoutManager);
         rvReview.setHasFixedSize(true);
     }
 
-    public void setAdapter(ArrayList<Review> reviews) {
+    private void setAdapter(ArrayList<Review> reviews) {
         adapter = new ReviewListAdapter(mContext, reviews);
         rvReview.setAdapter(adapter);
     }
@@ -214,17 +236,27 @@ public class MovieDetailsActivity extends AppCompatActivity implements MovieDeta
             viewModel.movie.isFavorite = 1;
         }
         if(view.getId() == R.id.tv_synopsis) {
-            tvSynopsisDetail.setVisibility(View.VISIBLE);
-            rvReview.setVisibility(View.GONE);
+            onSynopsisSelected();
+            selectedDetail = Constant.DETAIL_SYNOPSIS;
         }
         if(view.getId() == R.id.tv_review) {
-            rvReview.setVisibility(View.VISIBLE);
-            tvSynopsisDetail.setVisibility(View.GONE);
+            onReviewSelected();
+            selectedDetail = Constant.DETAIL_REVIEW;
             adapter.notifyDataSetChanged();
         }
         if(view.getId() == R.id.tv_video) {
 
         }
         Log.d("WENDY", "FAVORITE " + viewModel.movie.isFavorite);
+    }
+
+    private void onSynopsisSelected() {
+        tvSynopsisDetail.setVisibility(View.VISIBLE);
+        rvReview.setVisibility(View.GONE);
+    }
+
+    private void onReviewSelected() {
+        rvReview.setVisibility(View.VISIBLE);
+        tvSynopsisDetail.setVisibility(View.GONE);
     }
 }

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.os.PersistableBundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -35,6 +36,7 @@ public class MovieListActivity extends AppCompatActivity
     private MovieListViewModel viewModel;
     private Context mContext;
     private MovieListAdapter adapter;
+    private String selectedSort;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,19 +47,39 @@ public class MovieListActivity extends AppCompatActivity
         mContext = getBaseContext();
         ButterKnife.bind(this);
         setLayoutManager();
+
+        selectedSort = Constant.SORT_BY_DEFAULT;
     }
 
     @Override
     protected void onResume() {
         viewModel.attach();
         super.onResume();
-        loadMovie(Constant.SORT_BY_DEFAULT);
+        Log.d("WENDY", "OnResume " + selectedSort);
+        loadMovie(selectedSort);
     }
 
     @Override
     protected void onPause() {
         viewModel.detach();
         super.onPause();
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        Log.d("WENDY", "OnSaveInstance " + selectedSort);
+        outState.putString(Constant.SORT_BY, selectedSort);
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        if(savedInstanceState == null) return;
+        selectedSort = savedInstanceState.getString(Constant.SORT_BY);
+        Log.d("WENDY", "OnRestoreInstance " + selectedSort);
+
+        invalidateOptionsMenu();
     }
 
     @Override
@@ -77,6 +99,13 @@ public class MovieListActivity extends AppCompatActivity
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.main, menu);
+
+        if(selectedSort.equals(Constant.SORT_BY_POPULARITY)) {
+            menu.getItem(Constant.POPULARITY).setChecked(true);
+        }
+        if(selectedSort.equals(Constant.SORT_BY_TOP_RATED)) {
+            menu.getItem(Constant.TOP_RATED).setChecked(true);
+        }
         return true;
     }
 
@@ -85,18 +114,20 @@ public class MovieListActivity extends AppCompatActivity
         if(item.getItemId() == R.id.item_sort_by_popularity) {
             loadMovie(Constant.SORT_BY_POPULARITY);
             item.setChecked(true);
+            selectedSort = Constant.SORT_BY_POPULARITY;
             return true;
         }
         if(item.getItemId() == R.id.item_sort_by_top_rated) {
             loadMovie(Constant.SORT_BY_TOP_RATED);
             item.setChecked(true);
+            selectedSort = Constant.SORT_BY_TOP_RATED;
             return true;
         }
-        if(item.getItemId() == R.id.item_sort_by_favorite) {
-            item.setChecked(true);
-            viewModel.movies.clear();
-            updateMovie(viewModel.movies);
-        }
+//        if(item.getItemId() == R.id.item_sort_by_favorite) {
+//            item.setChecked(true);
+//            viewModel.movies.clear();
+//            updateMovie(viewModel.movies);
+//        }
         return super.onOptionsItemSelected(item);
     }
 

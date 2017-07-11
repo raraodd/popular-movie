@@ -11,7 +11,7 @@ import java.io.Serializable;
  * Created by wendy on 7/7/2017.
  */
 
-public class Movie implements Serializable, Parcelable {
+public class Movie implements Parcelable {
 
     private long id;
     @SerializedName("vote_average")

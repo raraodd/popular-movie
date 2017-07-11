@@ -17,8 +17,8 @@ import java.util.ArrayList;
 public class MovieDetailsViewModel implements MovieDetailsObserver {
 
     public Movie movie;
-    public ArrayList<Review> reviews;
-    public ArrayList<Video> videos;
+    public ArrayList<Review> reviews = new ArrayList<>();
+    public ArrayList<Video> videos = new ArrayList<>();
 
     private MovieDetailsView view;
     public MovieDetailsViewModel(MovieDetailsView view, Movie movie) {

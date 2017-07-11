@@ -52,7 +52,6 @@ public class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapter.Movi
     @Override
     public void onBindViewHolder(MovieViewHolder holder, int position) {
         Movie movie = movies.get(position);
-        Log.d("WENDY", "poster: " + movie.getPoster() + " title: " + movie.getTitle());
         holder.bind(movie);
     }
 
@@ -79,6 +78,7 @@ public class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapter.Movi
 
             Picasso.with(mContext)
                     .load(PopularMovieApp.API_POSTER_HEADER_LARGE + movie.getPoster())
+                    .placeholder(R.drawable.ic_sentiment_dissatisfied)
                     .into(mPoster);
         }
 

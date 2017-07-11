@@ -10,9 +10,9 @@
         <item android:id="@+id/item_sort_by_top_rated"
             android:title="Top Rated"
             />
-        <item android:id="@+id/item_sort_by_favorite"
-            android:title="Favorite"
-            />
+        <!--<item android:id="@+id/item_sort_by_favorite"-->
+            <!--android:title="Favorite"-->
+            <!--/>-->
     </group>
 
 </menu>
