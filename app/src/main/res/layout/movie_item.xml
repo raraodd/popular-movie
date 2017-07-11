@@ -4,12 +4,12 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="5dp">
+    android:layout_margin="@dimen/margin_small">
 
     <ImageView
         android:id="@+id/iv_poster"
-        android:layout_width="250dp"
-        android:layout_height="280dp"
+        android:layout_width="@dimen/image_width_medium"
+        android:layout_height="@dimen/image_height_large"
         android:background="@color/colorWhite"
         android:scaleType="fitXY"/>
 
@@ -24,8 +24,8 @@
             android:id="@+id/tv_movie_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:padding="5dp"
-            android:textSize="16sp"
+            android:padding="@dimen/padding_small"
+            android:textSize="@dimen/text_size_medium"
             android:textColor="@color/colorWhite"
             android:textAllCaps="true"
             android:textAlignment="gravity"/>

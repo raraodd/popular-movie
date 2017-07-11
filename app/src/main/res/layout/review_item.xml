@@ -10,20 +10,20 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Name"
-        android:textSize="16dp"
+        android:textSize="@dimen/text_size_medium"
         android:textColor="@color/colorBlack"/>
     <TextView
         android:id="@+id/tv_content_review"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingTop="5dp"
+        android:paddingTop="@dimen/padding_small"
         android:text="Review"
-        android:textSize="14dp"/>
+        android:textSize="@dimen/text_size_medium"/>
     <View
         android:layout_width="wrap_content"
-        android:layout_height="1dp"
+        android:layout_height="@dimen/separator"
         android:background="@color/colorAccent"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="8dp"/>
+        android:layout_marginTop="@dimen/margin_medium"
+        android:layout_marginBottom="@dimen/margin_medium"/>
 
 </LinearLayout>

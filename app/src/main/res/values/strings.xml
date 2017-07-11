@@ -3,4 +3,5 @@
     <string name="title_activity_movie_list">Popular Movie</string>
     <string name="title_activity_movie_detail">MovieDetailActivity</string>
     <string name="no_data">Sorry there is no data</string>
+    <string name="vote_denominator">/10</string>
 </resources>
