@@ -125,7 +125,6 @@ public class MovieDetailsActivity extends AppCompatActivity implements MovieDeta
     @Override
     public void onBackPressed() {
         Intent intent = getIntent().putExtra(Constant.EXTRA_MOVIE_FAVORITE, (Parcelable) viewModel.movie);
-        Log.d("WENDY", "result " + viewModel.movie.isFavorite);
 
         if (getParent() == null) {
             setResult(Activity.RESULT_OK, intent);
@@ -176,7 +175,6 @@ public class MovieDetailsActivity extends AppCompatActivity implements MovieDeta
     public boolean onOptionsItemSelected(MenuItem item) {
         if(item.getItemId() == android.R.id.home) {
             Intent intent = getIntent().putExtra(Constant.EXTRA_MOVIE_FAVORITE, (Parcelable) viewModel.movie);
-            Log.d("WENDY", "result " + viewModel.movie.isFavorite);
 
             if (getParent() == null) {
                 setResult(Activity.RESULT_OK, intent);
@@ -210,7 +208,6 @@ public class MovieDetailsActivity extends AppCompatActivity implements MovieDeta
         tvRuntime.setText(Utils.convertRuntime(viewModel.movie.getRuntime()));
         tvReleaseDate.setText(Utils.convertDateToString(viewModel.movie.getReleaseDate()));
         tvRating.setText(String.valueOf(viewModel.movie.getRating()));
-        Log.d("WENDY", movie.toString());
     }
 
     @Override
@@ -247,7 +244,6 @@ public class MovieDetailsActivity extends AppCompatActivity implements MovieDeta
         if(view.getId() == R.id.tv_video) {
 
         }
-        Log.d("WENDY", "FAVORITE " + viewModel.movie.isFavorite);
     }
 
     private void onSynopsisSelected() {

@@ -63,12 +63,10 @@ public class PopularMovieApp {
     public void loadMovie(String sortBy) {
         // get from api
         Call<MovieResponse> call = getApi().getMovieList(sortBy, API_KEY);
-        Log.d("WENDY", "Call api");
         call.enqueue(new Callback<MovieResponse>() {
             @Override
             public void onResponse(Call<MovieResponse> call, Response<MovieResponse> response) {
                 if(response.isSuccessful()) {
-                    Log.d("WENDY", "Dapet response");
                     ArrayList<Movie> newMovies = response.body().movies;
                     MovieListStatus.getInstance().notifyMovieUpdated(newMovies);
                 }
@@ -106,7 +104,6 @@ public class PopularMovieApp {
             public void onResponse(Call<ReviewResponse> call, Response<ReviewResponse> response) {
                 if(response.isSuccessful()) {
                     ArrayList<Review> reviews = response.body().reviews;
-                    Log.d("WENDY", "Get response review " + reviews.size());
                     MovieDetailsStatus.getInstance().notifyReviewUpdate(reviews);
                 }
             }
@@ -125,7 +122,6 @@ public class PopularMovieApp {
             public void onResponse(Call<VideoResponse> call, Response<VideoResponse> response) {
                 if(response.isSuccessful()) {
                     ArrayList<Video> videos = response.body().videos;
-                    Log.d("WENDY", "Get response video " + videos.size());
                     MovieDetailsStatus.getInstance().notifyVideoUpdate(videos);
                 }
             }

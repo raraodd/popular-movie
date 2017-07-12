@@ -55,7 +55,6 @@ public class MovieListActivity extends AppCompatActivity
     protected void onResume() {
         viewModel.attach();
         super.onResume();
-        Log.d("WENDY", "OnResume " + selectedSort);
         loadMovie(selectedSort);
     }
 
@@ -67,7 +66,6 @@ public class MovieListActivity extends AppCompatActivity
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
-        Log.d("WENDY", "OnSaveInstance " + selectedSort);
         outState.putString(Constant.SORT_BY, selectedSort);
         super.onSaveInstanceState(outState);
     }
@@ -77,7 +75,6 @@ public class MovieListActivity extends AppCompatActivity
         super.onRestoreInstanceState(savedInstanceState);
         if(savedInstanceState == null) return;
         selectedSort = savedInstanceState.getString(Constant.SORT_BY);
-        Log.d("WENDY", "OnRestoreInstance " + selectedSort);
 
         invalidateOptionsMenu();
     }
@@ -86,7 +83,6 @@ public class MovieListActivity extends AppCompatActivity
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if(resultCode == RESULT_OK && requestCode == Constant.CODE_MOVIE_FAVORITE) {
             Movie movie = data.getParcelableExtra(Constant.EXTRA_MOVIE_FAVORITE);
-            Log.d("WENDY", "get result " + movie.isFavorite);
             if(movie != null && movie.isFavorite == 1) {
                 viewModel.favMovies.add(movie);
             } else {
@@ -123,11 +119,11 @@ public class MovieListActivity extends AppCompatActivity
             selectedSort = Constant.SORT_BY_TOP_RATED;
             return true;
         }
-//        if(item.getItemId() == R.id.item_sort_by_favorite) {
-//            item.setChecked(true);
-//            viewModel.movies.clear();
-//            updateMovie(viewModel.movies);
-//        }
+        if(item.getItemId() == R.id.item_sort_by_favorite) {
+            item.setChecked(true);
+            viewModel.movies.clear();
+            updateMovie(viewModel.movies);
+        }
         return super.onOptionsItemSelected(item);
     }
 
