@@ -2,6 +2,7 @@ package com.wendy.popularmovieapp.service;
 
 import android.util.Log;
 
+import com.wendy.popularmovieapp.BuildConfig;
 import com.wendy.popularmovieapp.data.Review;
 import com.wendy.popularmovieapp.data.Video;
 import com.wendy.popularmovieapp.data.api.Api;
@@ -29,7 +30,7 @@ public class PopularMovieApp {
     public static final String API_POSTER_HEADER_SMALL = "http://image.tmdb.org/t/p/w92";
     public static final String API_BACKDROP_HEADER = "http://image.tmdb.org/t/p/w780";
 
-    public static final String API_KEY = "cb692d18978fefc9a45adcc97a6b049e";
+    public static final String API_KEY = BuildConfig.API_KEY;
 
     private static PopularMovieApp instance;
     public static PopularMovieApp getInstance() {
