@@ -158,8 +158,32 @@
             android:id="@+id/rv_review_list"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:visibility="gone"
-            android:padding="@dimen/padding_medium"/>
+            android:paddingBottom="@dimen/padding_medium"
+            android:background="@color/colorGrey"
+            android:visibility="gone"/>
+
+        <RelativeLayout
+            android:id="@+id/no_data_detail"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingBottom="@dimen/padding_medium"
+            android:gravity="center"
+            android:visibility="gone">
+            <ImageView
+                android:id="@+id/icon_dissatisfied"
+                android:layout_width="70dp"
+                android:layout_height="70dp"
+                android:src="@drawable/ic_sentiment_dissatisfied"
+                android:layout_centerInParent="true"
+                />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/no_data"
+                android:textSize="15sp"
+                android:layout_below="@id/icon_dissatisfied"
+                android:layout_centerHorizontal="true"/>
+        </RelativeLayout>
 
     </TableLayout>
 

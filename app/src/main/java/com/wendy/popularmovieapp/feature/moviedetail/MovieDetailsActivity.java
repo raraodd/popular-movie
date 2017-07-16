@@ -58,7 +58,8 @@ public class MovieDetailsActivity extends AppCompatActivity implements MovieDeta
     TextView tvSynopsisDetail;
     @BindView(R.id.rv_review_list)
     RecyclerView rvReview;
-
+    @BindView(R.id.no_data_detail)
+    View vNoData;
 
     private MovieDetailsViewModel viewModel;
     private Context mContext;
@@ -239,7 +240,13 @@ public class MovieDetailsActivity extends AppCompatActivity implements MovieDeta
         if(view.getId() == R.id.tv_review) {
             onReviewSelected();
             selectedDetail = Constant.DETAIL_REVIEW;
-            adapter.notifyDataSetChanged();
+            if(viewModel.reviews != null && adapter != null) {
+                adapter.notifyDataSetChanged();
+                if(viewModel.reviews.size() == 0) {
+                    rvReview.setVisibility(View.GONE);
+                    vNoData.setVisibility(View.VISIBLE);
+                }
+            }
         }
         if(view.getId() == R.id.tv_video) {
 
@@ -249,6 +256,7 @@ public class MovieDetailsActivity extends AppCompatActivity implements MovieDeta
     private void onSynopsisSelected() {
         tvSynopsisDetail.setVisibility(View.VISIBLE);
         rvReview.setVisibility(View.GONE);
+        vNoData.setVisibility(View.GONE);
     }
 
     private void onReviewSelected() {

@@ -67,8 +67,8 @@ public class ReviewListAdapter extends RecyclerView.Adapter<ReviewListAdapter.Re
         }
 
         void bind(Review review) {
-            tvName.setText(String.valueOf(review.getAuthor()));
-            tvContent.setText(String.valueOf(review.getContent()));
+            tvName.setText(review.getAuthor());
+            tvContent.setText(review.getContent());
         }
     }
 }
