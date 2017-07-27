@@ -1,34 +1,51 @@
-package com.wendy.popularmovieapp.data;
+package com.wendy.popularmovieapp.data.database;
 
+import android.arch.persistence.room.ColumnInfo;
+import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.PrimaryKey;
 import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.google.gson.annotations.SerializedName;
 
-import java.io.Serializable;
-
 /**
  * Created by wendy on 7/7/2017.
  */
 
+@Entity(primaryKeys = "original_title")
 public class Movie implements Parcelable {
 
     private long id;
+
     @SerializedName("vote_average")
+    @ColumnInfo(name = "vote_average")
     private float rating;
+
     @SerializedName("original_title")
+    @ColumnInfo(name = "original_title")
     private String title;
+
     @SerializedName("poster_path")
+    @ColumnInfo(name = "poster_path")
     private String poster;
-    @SerializedName("backdrop_path")
-    private String backdrop;
+
     @SerializedName("release_date")
+    @ColumnInfo(name = "release_date")
     private String releaseDate;
+
+    @SerializedName("backdrop_path")
+    @ColumnInfo(name = "backdrop_path")
+    private String backdrop;
+
     @SerializedName("overview")
+    @ColumnInfo(name = "overview")
     private String synopsis;
+
     @SerializedName("runtime")
+    @ColumnInfo(name = "runtime")
     private String runtime;
 
+    @ColumnInfo(name = "is_favorite")
     public int isFavorite;
 
     protected Movie(Parcel in) {

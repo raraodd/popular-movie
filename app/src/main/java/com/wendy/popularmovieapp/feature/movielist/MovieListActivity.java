@@ -4,11 +4,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
-import android.os.PersistableBundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -16,7 +14,7 @@ import android.view.View;
 
 import com.wendy.popularmovieapp.Constant;
 import com.wendy.popularmovieapp.R;
-import com.wendy.popularmovieapp.data.Movie;
+import com.wendy.popularmovieapp.data.database.Movie;
 import com.wendy.popularmovieapp.feature.moviedetail.MovieDetailsActivity;
 import com.wendy.popularmovieapp.utils.Utils;
 

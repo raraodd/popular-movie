@@ -1,6 +1,6 @@
 package com.wendy.popularmovieapp.feature.movielist;
 
-import com.wendy.popularmovieapp.data.Movie;
+import com.wendy.popularmovieapp.data.database.Movie;
 import com.wendy.popularmovieapp.service.MovieListObserver;
 import com.wendy.popularmovieapp.service.MovieListStatus;
 import com.wendy.popularmovieapp.service.PopularMovieApp;

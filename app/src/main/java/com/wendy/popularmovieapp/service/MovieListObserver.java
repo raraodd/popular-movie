@@ -1,6 +1,6 @@
 package com.wendy.popularmovieapp.service;
 
-import com.wendy.popularmovieapp.data.Movie;
+import com.wendy.popularmovieapp.data.database.Movie;
 
 import java.util.ArrayList;
 

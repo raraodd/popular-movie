@@ -1,7 +1,7 @@
 package com.wendy.popularmovieapp.data.api;
 
 import com.google.gson.annotations.SerializedName;
-import com.wendy.popularmovieapp.data.Movie;
+import com.wendy.popularmovieapp.data.database.Movie;
 
 import java.util.ArrayList;
 

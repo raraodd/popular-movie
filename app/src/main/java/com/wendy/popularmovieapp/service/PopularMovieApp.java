@@ -3,10 +3,11 @@ package com.wendy.popularmovieapp.service;
 import android.util.Log;
 
 import com.wendy.popularmovieapp.BuildConfig;
-import com.wendy.popularmovieapp.data.Review;
-import com.wendy.popularmovieapp.data.Video;
+import com.wendy.popularmovieapp.data.database.MovieDao;
+import com.wendy.popularmovieapp.data.database.Review;
+import com.wendy.popularmovieapp.data.database.Video;
 import com.wendy.popularmovieapp.data.api.Api;
-import com.wendy.popularmovieapp.data.Movie;
+import com.wendy.popularmovieapp.data.database.Movie;
 import com.wendy.popularmovieapp.data.api.MovieResponse;
 import com.wendy.popularmovieapp.data.api.ReviewResponse;
 import com.wendy.popularmovieapp.data.api.VideoResponse;
@@ -68,6 +69,7 @@ public class PopularMovieApp {
             public void onResponse(Call<MovieResponse> call, Response<MovieResponse> response) {
                 if(response.isSuccessful()) {
                     ArrayList<Movie> newMovies = response.body().movies;
+
                     MovieListStatus.getInstance().notifyMovieUpdated(newMovies);
                 }
             }

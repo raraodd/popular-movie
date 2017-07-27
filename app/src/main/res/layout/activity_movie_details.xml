@@ -9,7 +9,7 @@
 
     <TableLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:stretchColumns="1">
 
         <LinearLayout
@@ -55,8 +55,8 @@
                     android:orientation="horizontal"
                     android:layout_below="@id/tv_release_date_details">
                     <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
                         android:src="@drawable/ic_star"/>
                     <TextView
                         android:id="@+id/tv_rating_details"
@@ -174,8 +174,7 @@
                 android:layout_width="70dp"
                 android:layout_height="70dp"
                 android:src="@drawable/ic_sentiment_dissatisfied"
-                android:layout_centerInParent="true"
-                />
+                android:layout_centerInParent="true"/>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

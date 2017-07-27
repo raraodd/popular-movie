@@ -3,14 +3,11 @@ package com.wendy.popularmovieapp.feature.moviedetail;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.media.Image;
 import android.os.Parcelable;
-import android.support.design.widget.TabLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
@@ -19,13 +16,11 @@ import android.widget.TextView;
 import com.squareup.picasso.Picasso;
 import com.wendy.popularmovieapp.Constant;
 import com.wendy.popularmovieapp.R;
-import com.wendy.popularmovieapp.data.Movie;
-import com.wendy.popularmovieapp.data.Review;
-import com.wendy.popularmovieapp.data.Video;
+import com.wendy.popularmovieapp.data.database.Movie;
+import com.wendy.popularmovieapp.data.database.Review;
+import com.wendy.popularmovieapp.data.database.Video;
 import com.wendy.popularmovieapp.service.PopularMovieApp;
 import com.wendy.popularmovieapp.utils.Utils;
-
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 
@@ -34,32 +29,19 @@ import butterknife.ButterKnife;
 
 public class MovieDetailsActivity extends AppCompatActivity implements MovieDetailsView, View.OnClickListener
 {
-    @BindView(R.id.tv_title_and_year_details)
-    TextView tvTitleYear;
-    @BindView(R.id.iv_poster_details)
-    ImageView ivPoster;
-    @BindView((R.id.tv_runtime_details))
-    TextView tvRuntime;
-    @BindView(R.id.tv_release_date_details)
-    TextView tvReleaseDate;
-    @BindView(R.id.tv_rating_details)
-    TextView tvRating;
-    @BindView(R.id.iv_favorite_detail)
-    ImageView ivFavorite;
-    @BindView(R.id.iv_unfavorite_detail)
-    ImageView ivUnfavorite;
-    @BindView(R.id.tv_synopsis)
-    TextView tvSynopsis;
-    @BindView(R.id.tv_review)
-    TextView tvReview;
-    @BindView(R.id.tv_video)
-    TextView tvVideo;
-    @BindView(R.id.tv_synopsis_detail)
-    TextView tvSynopsisDetail;
-    @BindView(R.id.rv_review_list)
-    RecyclerView rvReview;
-    @BindView(R.id.no_data_detail)
-    View vNoData;
+    @BindView(R.id.tv_title_and_year_details) TextView tvTitleYear;
+    @BindView(R.id.iv_poster_details) ImageView ivPoster;
+    @BindView((R.id.tv_runtime_details)) TextView tvRuntime;
+    @BindView(R.id.tv_release_date_details) TextView tvReleaseDate;
+    @BindView(R.id.tv_rating_details) TextView tvRating;
+    @BindView(R.id.iv_favorite_detail) ImageView ivFavorite;
+    @BindView(R.id.iv_unfavorite_detail) ImageView ivUnfavorite;
+    @BindView(R.id.tv_synopsis) TextView tvSynopsis;
+    @BindView(R.id.tv_review) TextView tvReview;
+    @BindView(R.id.tv_video) TextView tvVideo;
+    @BindView(R.id.tv_synopsis_detail) TextView tvSynopsisDetail;
+    @BindView(R.id.rv_review_list) RecyclerView rvReview;
+    @BindView(R.id.no_data_detail) View vNoData;
 
     private MovieDetailsViewModel viewModel;
     private Context mContext;
@@ -262,5 +244,6 @@ public class MovieDetailsActivity extends AppCompatActivity implements MovieDeta
     private void onReviewSelected() {
         rvReview.setVisibility(View.VISIBLE);
         tvSynopsisDetail.setVisibility(View.GONE);
+        vNoData.setVisibility(View.GONE);
     }
 }
