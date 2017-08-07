@@ -30,4 +30,5 @@ public class Constant {
     public static final String SELECTED_DETAIL = "detail_selected";
     public static final int DETAIL_SYNOPSIS = 0;
     public static final int DETAIL_REVIEW = 1;
+    public static final int DETAIL_VIDEO = 2;
 }

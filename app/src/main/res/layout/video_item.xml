@@ -1,0 +1,25 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/colorGrey"
+    android:layout_gravity="center"
+    android:layout_marginTop="@dimen/padding_small"
+    android:layout_marginLeft="@dimen/padding_medium"
+    android:layout_marginRight="@dimen/padding_medium"
+    android:layout_marginBottom="@dimen/padding_small">
+
+        <ImageView
+            android:id="@+id/iv_trailer_img"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:scaleType="fitCenter"/>
+
+        <ImageView
+            android:id="@+id/iv_play_button"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_gravity="center"
+            android:src="@drawable/ic_play_circle"
+            android:clickable="true"/>
+
+</FrameLayout>

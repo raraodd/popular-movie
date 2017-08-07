@@ -81,5 +81,6 @@ public class MovieDetailsViewModel implements MovieDetailsObserver {
     @Override
     public void onVideosLoaded() {
         videos = PopularMovieApp.getInstance().getVideos(movieId);
+        view.updateVideo(videos);
     }
 }
