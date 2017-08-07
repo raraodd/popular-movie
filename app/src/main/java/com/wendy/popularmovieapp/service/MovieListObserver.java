@@ -9,5 +9,6 @@ import java.util.ArrayList;
  */
 
 public interface MovieListObserver {
-    void onMoviesLoaded(ArrayList<Movie> newMovies);
+    void onMoviesLoaded(String sortBy);
+
 }

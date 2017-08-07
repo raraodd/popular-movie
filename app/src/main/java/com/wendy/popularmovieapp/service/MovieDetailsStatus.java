@@ -32,21 +32,21 @@ public class MovieDetailsStatus
         observers.remove(observer);
     }
 
-    public void notifyMovieUpdated(Movie movie) {
+    public void notifyMovieUpdated() {
         for(MovieDetailsObserver observer : observers) {
-            observer.onMovieLoaded(movie);
+            observer.onMovieLoaded();
         }
     }
 
-    public void notifyReviewUpdate(ArrayList<Review> reviews) {
+    public void notifyReviewUpdate() {
         for(MovieDetailsObserver observer : observers) {
-            observer.onReviewsLoaded(reviews);
+            observer.onReviewsLoaded();
         }
     }
 
-    public void notifyVideoUpdate(ArrayList<Video> videos) {
+    public void notifyVideoUpdate() {
         for(MovieDetailsObserver observer : observers) {
-            observer.onVideosLoaded(videos);
+            observer.onVideosLoaded();
         }
     }
 }

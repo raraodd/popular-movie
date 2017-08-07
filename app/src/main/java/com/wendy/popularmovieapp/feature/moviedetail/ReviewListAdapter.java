@@ -11,6 +11,7 @@ import com.wendy.popularmovieapp.R;
 import com.wendy.popularmovieapp.data.database.Review;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -21,10 +22,10 @@ import butterknife.ButterKnife;
 
 public class ReviewListAdapter extends RecyclerView.Adapter<ReviewListAdapter.ReviewViewHolder> {
 
-    private ArrayList<Review> reviews;
+    private List<Review> reviews;
     private Context mContext;
 
-    public ReviewListAdapter(Context context, ArrayList<Review> reviews) {
+    public ReviewListAdapter(Context context, List<Review> reviews) {
         this.mContext = context;
         this.reviews = reviews;
     }
@@ -63,8 +64,8 @@ public class ReviewListAdapter extends RecyclerView.Adapter<ReviewListAdapter.Re
         }
 
         void bind(Review review) {
-            tvName.setText(review.getAuthor());
-            tvContent.setText(review.getContent());
+            tvName.setText(review.author);
+            tvContent.setText(review.content);
         }
     }
 }

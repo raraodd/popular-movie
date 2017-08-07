@@ -14,6 +14,7 @@ import com.wendy.popularmovieapp.data.database.Movie;
 import com.wendy.popularmovieapp.service.PopularMovieApp;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by SRIN on 7/7/2017.
@@ -21,11 +22,11 @@ import java.util.ArrayList;
 
 public class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapter.MovieViewHolder> {
 
-    private ArrayList<Movie> movies;
+    private List<Movie> movies;
     private Context mContext;
     private final ListMovieClickListener mOnClickListener;
 
-    public MovieListAdapter(Context context, ArrayList<Movie> movies, ListMovieClickListener listener) {
+    public MovieListAdapter(Context context, List<Movie> movies, ListMovieClickListener listener) {
         this.mContext = context;
         this.mOnClickListener = listener;
         this.movies = movies;
@@ -73,10 +74,10 @@ public class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapter.Movi
         }
 
         void bind(Movie movie) {
-            mMovieTitle.setText(String.valueOf(movie.getTitle()));
+            mMovieTitle.setText(String.valueOf(movie.title));
 
             Picasso.with(mContext)
-                    .load(PopularMovieApp.API_POSTER_HEADER_LARGE + movie.getPoster())
+                    .load(PopularMovieApp.API_POSTER_HEADER_LARGE + movie.poster)
                     .placeholder(R.drawable.ic_sentiment_dissatisfied)
                     .into(mPoster);
         }

@@ -2,8 +2,12 @@ package com.wendy.popularmovieapp.service;
 
 import android.util.Log;
 
+import com.orm.SugarRecord;
+import com.orm.query.Condition;
+import com.orm.query.Select;
+import com.orm.util.NamingHelper;
 import com.wendy.popularmovieapp.BuildConfig;
-import com.wendy.popularmovieapp.data.database.MovieDao;
+import com.wendy.popularmovieapp.Constant;
 import com.wendy.popularmovieapp.data.database.Review;
 import com.wendy.popularmovieapp.data.database.Video;
 import com.wendy.popularmovieapp.data.api.Api;
@@ -13,6 +17,7 @@ import com.wendy.popularmovieapp.data.api.ReviewResponse;
 import com.wendy.popularmovieapp.data.api.VideoResponse;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.*;
@@ -61,7 +66,8 @@ public class PopularMovieApp {
         return api;
     }
 
-    public void loadMovie(String sortBy) {
+
+    public void loadMovie(final String sortBy) {
         // get from api
         Call<MovieResponse> call = getApi().getMovieList(sortBy, API_KEY);
         call.enqueue(new Callback<MovieResponse>() {
@@ -70,7 +76,12 @@ public class PopularMovieApp {
                 if(response.isSuccessful()) {
                     ArrayList<Movie> newMovies = response.body().movies;
 
-                    MovieListStatus.getInstance().notifyMovieUpdated(newMovies);
+                    for(Movie item: newMovies) {
+                        item.type = sortBy;
+                        SugarRecord.save(item);
+                    }
+
+                    MovieListStatus.getInstance().notifyMovieUpdated(sortBy);
                 }
             }
 
@@ -81,14 +92,45 @@ public class PopularMovieApp {
         });
     }
 
-    public void loadMovieDetails(long movieId) {
+    public List<Movie> getMovies(String sortBy) {
+        String where;
+        List<Movie> result;
+        if (!sortBy.equals(Constant.SORT_BY_FAVORITE)) {
+            where = NamingHelper.toSQLNameDefault("type") + " = ? ";
+            result =  SugarRecord.find(Movie.class, where, new String[] {sortBy});
+        } else {
+            where = NamingHelper.toSQLNameDefault("isFavorite") + " = 1 ";
+            result =  SugarRecord.find(Movie.class, where);
+        }
+
+        return result;
+    }
+
+    public Movie getMovieById(Long movieId) {
+        return Select.from(Movie.class)
+                .where(Condition.prop(NamingHelper.toSQLNameDefault("id")).eq(movieId))
+                .first();
+    }
+
+    public void setFavorite(int isFavorite, Long movieId) {
+        Movie movie = getMovieById(movieId);
+        movie.isFavorite = isFavorite;
+        SugarRecord.save(movie);
+    }
+
+    public void loadMovieDetails(final long movieId) {
         Call<Movie> call = getApi().getMovieDetails(movieId, API_KEY);
         call.enqueue(new Callback<Movie>() {
             @Override
             public void onResponse(Call<Movie> call, Response<Movie> response) {
                 if(response.isSuccessful()) {
                     Movie movieDetails = response.body();
-                    MovieDetailsStatus.getInstance().notifyMovieUpdated(movieDetails);
+
+                    Movie movie = getMovieById(movieId);
+                    movie.synopsis = movieDetails.synopsis;
+                    SugarRecord.save(movie);
+
+                    MovieDetailsStatus.getInstance().notifyMovieUpdated();
                 }
             }
 
@@ -99,14 +141,20 @@ public class PopularMovieApp {
         });
     }
 
-    public void loadReviews(long movieId) {
+    public void loadReviews(final long movieId) {
         Call<ReviewResponse> call = getApi().getReviewList(movieId, API_KEY);
         call.enqueue(new Callback<ReviewResponse>() {
             @Override
             public void onResponse(Call<ReviewResponse> call, Response<ReviewResponse> response) {
                 if(response.isSuccessful()) {
                     ArrayList<Review> reviews = response.body().reviews;
-                    MovieDetailsStatus.getInstance().notifyReviewUpdate(reviews);
+
+                    for(Review item: reviews) {
+                        item.movieId = movieId;
+                        SugarRecord.save(item);
+                    }
+
+                    MovieDetailsStatus.getInstance().notifyReviewUpdate();
                 }
             }
 
@@ -117,14 +165,25 @@ public class PopularMovieApp {
         });
     }
 
-    public void loadVideos(long movieId) {
+    public List<Review> getReviews(long movieId) {
+        String where = NamingHelper.toSQLNameDefault("movieId") + " = " + movieId;
+        return SugarRecord.find(Review.class, where);
+    }
+
+    public void loadVideos(final long movieId) {
         Call<VideoResponse> call = getApi().getVideoList(movieId, API_KEY);
         call.enqueue(new Callback<VideoResponse>() {
             @Override
             public void onResponse(Call<VideoResponse> call, Response<VideoResponse> response) {
                 if(response.isSuccessful()) {
                     ArrayList<Video> videos = response.body().videos;
-                    MovieDetailsStatus.getInstance().notifyVideoUpdate(videos);
+
+                    for(Video item: videos) {
+                        item.movieId = movieId;
+                        SugarRecord.save(item);
+                    }
+
+                    MovieDetailsStatus.getInstance().notifyVideoUpdate();
                 }
             }
 
@@ -133,5 +192,10 @@ public class PopularMovieApp {
                 Log.d("WENDY", t.getMessage());
             }
         });
+    }
+
+    public List<Video> getVideos(long movieId) {
+        String where = NamingHelper.toSQLNameDefault("movieId") + " = " + movieId;
+        return SugarRecord.find(Video.class, where);
     }
 }

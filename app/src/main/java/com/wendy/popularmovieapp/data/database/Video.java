@@ -1,27 +1,29 @@
 package com.wendy.popularmovieapp.data.database;
 
 import com.google.gson.annotations.SerializedName;
+import com.orm.dsl.Ignore;
+import com.orm.dsl.Table;
 
 /**
  * Created by SRIN on 7/10/2017.
  */
 
+@Table
 public class Video {
+    @Ignore
     private String id;
+
+    public long movieId;
+
     @SerializedName("name")
-    private String title;
+    public String title;
     @SerializedName("key")
-    private String urlKey;
+    public String urlKey;
+
+    public Video () {
+    }
 
     public String getId() {
         return id;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public String getUrlKey() {
-        return urlKey;
     }
 }

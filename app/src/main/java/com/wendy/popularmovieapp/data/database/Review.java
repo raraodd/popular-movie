@@ -1,33 +1,32 @@
 package com.wendy.popularmovieapp.data.database;
 
 import com.google.gson.annotations.SerializedName;
+import com.orm.dsl.Ignore;
+import com.orm.dsl.Table;
 
 /**
  * Created by SRIN on 7/10/2017.
  */
 
+@Table
 public class Review {
+    @Ignore
     private String id;
+
+    public long reviewId;
+    public long movieId;
+
     @SerializedName("author")
-    private String author;
+    public String author;
     @SerializedName("content")
-    private String content;
+    public String content;
     @SerializedName("url")
-    private String url;
+    public String url;
+
+    public Review() {
+    }
 
     public String getId() {
         return id;
-    }
-
-    public String getAuthor() {
-        return author;
-    }
-
-    public String getContent() {
-        return content;
-    }
-
-    public String getUrl() {
-        return url;
     }
 }

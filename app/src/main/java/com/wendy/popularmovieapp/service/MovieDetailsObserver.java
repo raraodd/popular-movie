@@ -11,7 +11,7 @@ import java.util.ArrayList;
  */
 
 public interface MovieDetailsObserver {
-    void onMovieLoaded(Movie movie);
-    void onReviewsLoaded(ArrayList<Review> reviews);
-    void onVideosLoaded(ArrayList<Video> videos);
+    void onMovieLoaded();
+    void onReviewsLoaded();
+    void onVideosLoaded();
 }

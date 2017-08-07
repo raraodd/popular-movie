@@ -1,11 +1,13 @@
 package com.wendy.popularmovieapp.feature.movielist;
 
+import com.wendy.popularmovieapp.Constant;
 import com.wendy.popularmovieapp.data.database.Movie;
 import com.wendy.popularmovieapp.service.MovieListObserver;
 import com.wendy.popularmovieapp.service.MovieListStatus;
 import com.wendy.popularmovieapp.service.PopularMovieApp;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by wendy on 7/6/17.
@@ -13,8 +15,7 @@ import java.util.ArrayList;
 
 public class MovieListViewModel implements MovieListObserver {
 
-    public ArrayList<Movie> movies = new ArrayList<>();
-    public ArrayList<Movie> favMovies = new ArrayList<>();
+    public List<Movie> movies = new ArrayList<>();
 
     private MovieListView view;
     public MovieListViewModel(MovieListView view) {
@@ -22,7 +23,11 @@ public class MovieListViewModel implements MovieListObserver {
     }
 
     public void loadMovie(String sortBy) {
-        PopularMovieApp.getInstance().loadMovie(sortBy);
+        if(PopularMovieApp.getInstance().getMovies(sortBy).size() == 0 && !sortBy.equals(Constant.SORT_BY_FAVORITE)) {
+            PopularMovieApp.getInstance().loadMovie(sortBy);
+        } else {
+            onMoviesLoaded(sortBy);
+        }
     }
 
     public void attach() {
@@ -34,8 +39,8 @@ public class MovieListViewModel implements MovieListObserver {
     }
 
     @Override
-    public void onMoviesLoaded(ArrayList<Movie> newMovies) {
-        this.movies = newMovies;
+    public void onMoviesLoaded(String sortBy) {
+        movies = PopularMovieApp.getInstance().getMovies(sortBy);
         view.updateMovie(movies);
     }
 }

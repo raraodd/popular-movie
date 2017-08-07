@@ -16,9 +16,11 @@ import com.wendy.popularmovieapp.Constant;
 import com.wendy.popularmovieapp.R;
 import com.wendy.popularmovieapp.data.database.Movie;
 import com.wendy.popularmovieapp.feature.moviedetail.MovieDetailsActivity;
+import com.wendy.popularmovieapp.service.PopularMovieApp;
 import com.wendy.popularmovieapp.utils.Utils;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -78,18 +80,6 @@ public class MovieListActivity extends AppCompatActivity
     }
 
     @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if(resultCode == RESULT_OK && requestCode == Constant.CODE_MOVIE_FAVORITE) {
-            Movie movie = data.getParcelableExtra(Constant.EXTRA_MOVIE_FAVORITE);
-            if(movie != null && movie.isFavorite == 1) {
-                viewModel.favMovies.add(movie);
-            } else {
-                viewModel.favMovies.remove(movie);
-            }
-        }
-    }
-
-    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.main, menu);
@@ -99,6 +89,9 @@ public class MovieListActivity extends AppCompatActivity
         }
         if(selectedSort.equals(Constant.SORT_BY_TOP_RATED)) {
             menu.getItem(Constant.TOP_RATED).setChecked(true);
+        }
+        if(selectedSort.equals(Constant.SORT_BY_FAVORITE)) {
+            menu.getItem(Constant.SORT_FAVORITE).setChecked(true);
         }
         return true;
     }
@@ -118,9 +111,10 @@ public class MovieListActivity extends AppCompatActivity
             return true;
         }
         if(item.getItemId() == R.id.item_sort_by_favorite) {
+            loadMovie(Constant.SORT_BY_FAVORITE);
             item.setChecked(true);
-            viewModel.movies.clear();
-            updateMovie(viewModel.movies);
+            selectedSort = Constant.SORT_BY_FAVORITE;
+            return true;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -131,7 +125,7 @@ public class MovieListActivity extends AppCompatActivity
     }
 
     @Override
-    public void updateMovie(ArrayList<Movie> newMovies) {
+    public void updateMovie(List<Movie> newMovies) {
         if(newMovies.size() != 0) {
             mNoData.setVisibility(View.GONE);
             rvMovieList.setVisibility(View.VISIBLE);
@@ -149,7 +143,7 @@ public class MovieListActivity extends AppCompatActivity
         rvMovieList.setHasFixedSize(true);
     }
 
-    public void setAdapter(ArrayList<Movie> movies) {
+    public void setAdapter(List<Movie> movies) {
         adapter = new MovieListAdapter(mContext, movies, this);
         rvMovieList.setAdapter(adapter);
     }
@@ -159,8 +153,7 @@ public class MovieListActivity extends AppCompatActivity
         Movie movie = viewModel.movies.get(clickedMovieIndex);
 
         Intent intent = new Intent(this, MovieDetailsActivity.class);
-        intent.putExtra(Constant.EXTRA_MOVIE, (Parcelable) movie);
-
-        startActivityForResult(intent, Constant.CODE_MOVIE_FAVORITE);
+        intent.putExtra(Constant.MOVIE_ID, movie.getId());
+        startActivity(intent);
     }
 }

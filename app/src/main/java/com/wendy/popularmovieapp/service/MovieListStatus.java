@@ -30,9 +30,9 @@ public class MovieListStatus {
         observers.remove(observer);
     }
 
-    public void notifyMovieUpdated(ArrayList<Movie> newMovies) {
+    public void notifyMovieUpdated(String sortBy) {
         for(MovieListObserver observer : observers) {
-            observer.onMoviesLoaded(newMovies);
+            observer.onMoviesLoaded(sortBy);
         }
     }
 }

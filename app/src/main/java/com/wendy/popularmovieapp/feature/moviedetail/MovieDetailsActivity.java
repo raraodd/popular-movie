@@ -23,6 +23,7 @@ import com.wendy.popularmovieapp.service.PopularMovieApp;
 import com.wendy.popularmovieapp.utils.Utils;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -45,6 +46,7 @@ public class MovieDetailsActivity extends AppCompatActivity implements MovieDeta
 
     private MovieDetailsViewModel viewModel;
     private Context mContext;
+    private long movieId;
     private Movie mMovie;
     private ReviewListAdapter adapter;
     private int selectedDetail;
@@ -54,9 +56,8 @@ public class MovieDetailsActivity extends AppCompatActivity implements MovieDeta
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie_details);
 
-        mMovie = getIntent().getParcelableExtra(Constant.EXTRA_MOVIE);
-
-        viewModel = new MovieDetailsViewModel(this, mMovie);
+        movieId = getIntent().getLongExtra(Constant.MOVIE_ID, 0);
+        viewModel = new MovieDetailsViewModel(this, movieId);
         mContext = getBaseContext();
 
         ButterKnife.bind(this);
@@ -74,9 +75,9 @@ public class MovieDetailsActivity extends AppCompatActivity implements MovieDeta
     protected void onResume() {
         viewModel.attach();
         super.onResume();
-        loadMovieDetails(viewModel.movie.getId());
-        loadReviews(viewModel.movie.getId());
-        loadVideos(viewModel.movie.getId());
+        loadMovieDetails();
+        loadReviews();
+        loadVideos();
 
         if(selectedDetail == Constant.DETAIL_SYNOPSIS) {
             onSynopsisSelected();
@@ -106,24 +107,6 @@ public class MovieDetailsActivity extends AppCompatActivity implements MovieDeta
     }
 
     @Override
-    public void onBackPressed() {
-        Intent intent = getIntent().putExtra(Constant.EXTRA_MOVIE_FAVORITE, (Parcelable) viewModel.movie);
-
-        if (getParent() == null) {
-            setResult(Activity.RESULT_OK, intent);
-        }
-        else {
-            getParent().setResult(Activity.RESULT_OK, intent);
-        }
-        super.onBackPressed();
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-    }
-
-    @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
     }
@@ -136,11 +119,28 @@ public class MovieDetailsActivity extends AppCompatActivity implements MovieDeta
 
     private void setContent() {
         tvTitleYear.setText(viewModel.getTitleAndYear());
-        tvSynopsisDetail.setText(viewModel.movie.getSynopsis());
+        tvSynopsisDetail.setText(viewModel.movie.synopsis);
+
+        if(viewModel.movie.isFavorite == Constant.FAVORITE) {
+            setFavoriteVisibility(true);
+        } else {
+            setFavoriteVisibility(false);
+        }
+
         Picasso.with(mContext)
-                .load(PopularMovieApp.API_POSTER_HEADER_LARGE + viewModel.movie.getPoster())
+                .load(PopularMovieApp.API_POSTER_HEADER_LARGE + viewModel.movie.poster)
                 .placeholder(R.drawable.ic_sentiment_dissatisfied)
                 .into(ivPoster);
+    }
+
+    private void setFavoriteVisibility(boolean isFavorite) {
+        if(isFavorite) {
+            ivUnfavorite.setVisibility(View.GONE);
+            ivFavorite.setVisibility(View.VISIBLE);
+        } else {
+            ivFavorite.setVisibility(View.GONE);
+            ivUnfavorite.setVisibility(View.VISIBLE);
+        }
     }
 
     private void setLayoutManager() {
@@ -149,7 +149,7 @@ public class MovieDetailsActivity extends AppCompatActivity implements MovieDeta
         rvReview.setHasFixedSize(true);
     }
 
-    private void setAdapter(ArrayList<Review> reviews) {
+    private void setAdapter(List<Review> reviews) {
         adapter = new ReviewListAdapter(mContext, reviews);
         rvReview.setAdapter(adapter);
     }
@@ -157,63 +157,52 @@ public class MovieDetailsActivity extends AppCompatActivity implements MovieDeta
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if(item.getItemId() == android.R.id.home) {
-            Intent intent = getIntent().putExtra(Constant.EXTRA_MOVIE_FAVORITE, (Parcelable) viewModel.movie);
-
-            if (getParent() == null) {
-                setResult(Activity.RESULT_OK, intent);
-            }
-            else {
-                getParent().setResult(Activity.RESULT_OK, intent);
-            }
             finish();
-            return true;
         }
         return super.onOptionsItemSelected(item);
     }
 
     @Override
-    public void loadMovieDetails(long movieId) {
-        viewModel.loadMovieDetails(movieId);
+    public void loadMovieDetails() {
+        viewModel.loadMovieDetails();
     }
 
     @Override
-    public void loadReviews(long movieId) {
-        viewModel.loadReviews(movieId);
+    public void loadReviews() {
+        viewModel.loadReviews();
     }
 
     @Override
-    public void loadVideos(long movieId) {
-        viewModel.loadVideos(movieId);
+    public void loadVideos() {
+        viewModel.loadVideos();
     }
 
     @Override
     public void updateView(Movie movie) {
-        tvRuntime.setText(Utils.convertRuntime(viewModel.movie.getRuntime()));
-        tvReleaseDate.setText(Utils.convertDateToString(viewModel.movie.getReleaseDate()));
-        tvRating.setText(String.valueOf(viewModel.movie.getRating()));
+        tvRuntime.setText(Utils.convertRuntime(viewModel.movie.runtime));
+        tvReleaseDate.setText(Utils.convertDateToString(viewModel.movie.releaseDate));
+        tvRating.setText(String.valueOf(viewModel.movie.rating));
     }
 
     @Override
-    public void updateReview(ArrayList<Review> reviews) {
+    public void updateReview(List<Review> reviews) {
         setAdapter(viewModel.reviews);
     }
 
     @Override
-    public void updateVideo(ArrayList<Video> videos) {
+    public void updateVideo(List<Video> videos) {
 
     }
 
     @Override
     public void onClick(View view) {
         if(view.getId() == R.id.iv_favorite_detail) {
-            ivFavorite.setVisibility(View.GONE);
-            ivUnfavorite.setVisibility(View.VISIBLE);
-            viewModel.movie.isFavorite =0;
+            setFavoriteVisibility(false);
+            viewModel.setFavorite(Constant.UNFAVORITE);
         }
         if(view.getId() == R.id.iv_unfavorite_detail) {
-            ivUnfavorite.setVisibility(View.GONE);
-            ivFavorite.setVisibility(View.VISIBLE);
-            viewModel.movie.isFavorite = 1;
+            setFavoriteVisibility(true);
+            viewModel.setFavorite(Constant.FAVORITE);
         }
         if(view.getId() == R.id.tv_synopsis) {
             onSynopsisSelected();
