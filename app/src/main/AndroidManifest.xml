@@ -40,6 +40,12 @@
         <activity
             android:name=".feature.moviedetail.MovieDetailsActivity"
             android:label="@string/title_activity_movie_detail"/>
+
+        <provider
+            android:name="com.wendy.popularmovieapp.data.database.MovieContentProvider"
+            android:authorities="com.wendy.popularmovieapp"
+            android:exported="true"/>
+
     </application>
 
 </manifest>

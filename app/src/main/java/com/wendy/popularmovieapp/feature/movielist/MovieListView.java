@@ -1,8 +1,7 @@
 package com.wendy.popularmovieapp.feature.movielist;
 
-import com.wendy.popularmovieapp.data.database.Movie;
+import com.wendy.popularmovieapp.data.Movie;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**

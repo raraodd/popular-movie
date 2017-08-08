@@ -1,9 +1,7 @@
 package com.wendy.popularmovieapp.feature.moviedetail;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -16,13 +14,12 @@ import android.widget.TextView;
 import com.squareup.picasso.Picasso;
 import com.wendy.popularmovieapp.Constant;
 import com.wendy.popularmovieapp.R;
-import com.wendy.popularmovieapp.data.database.Movie;
-import com.wendy.popularmovieapp.data.database.Review;
-import com.wendy.popularmovieapp.data.database.Video;
+import com.wendy.popularmovieapp.data.Movie;
+import com.wendy.popularmovieapp.data.Review;
+import com.wendy.popularmovieapp.data.Video;
 import com.wendy.popularmovieapp.service.PopularMovieApp;
 import com.wendy.popularmovieapp.utils.Utils;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;

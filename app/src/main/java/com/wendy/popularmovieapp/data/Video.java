@@ -1,4 +1,4 @@
-package com.wendy.popularmovieapp.data.database;
+package com.wendy.popularmovieapp.data;
 
 import com.google.gson.annotations.SerializedName;
 import com.orm.dsl.Ignore;

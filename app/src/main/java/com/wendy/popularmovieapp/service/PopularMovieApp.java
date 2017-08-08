@@ -1,20 +1,25 @@
 package com.wendy.popularmovieapp.service;
 
+import android.content.ContentValues;
+import android.database.Cursor;
+import android.net.Uri;
 import android.util.Log;
 
 import com.orm.SugarRecord;
 import com.orm.query.Condition;
 import com.orm.query.Select;
 import com.orm.util.NamingHelper;
+import com.wendy.popularmovieapp.App;
 import com.wendy.popularmovieapp.BuildConfig;
 import com.wendy.popularmovieapp.Constant;
-import com.wendy.popularmovieapp.data.database.Review;
-import com.wendy.popularmovieapp.data.database.Video;
+import com.wendy.popularmovieapp.data.Review;
+import com.wendy.popularmovieapp.data.Video;
 import com.wendy.popularmovieapp.data.api.Api;
-import com.wendy.popularmovieapp.data.database.Movie;
+import com.wendy.popularmovieapp.data.Movie;
 import com.wendy.popularmovieapp.data.api.MovieResponse;
 import com.wendy.popularmovieapp.data.api.ReviewResponse;
 import com.wendy.popularmovieapp.data.api.VideoResponse;
+import com.wendy.popularmovieapp.data.database.MovieContract;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -78,6 +83,21 @@ public class PopularMovieApp {
 
                     for(Movie item: newMovies) {
                         item.type = sortBy;
+
+                        ContentValues contentValues = new ContentValues();
+                        contentValues.put(MovieContract.MovieEntry._ID, item.getId());
+                        contentValues.put(MovieContract.MovieEntry.COLUMN_RATING, item.rating);
+                        contentValues.put(MovieContract.MovieEntry.COLUMN_TITLE, item.title);
+                        contentValues.put(MovieContract.MovieEntry.COLUMN_POSTER, item.poster);
+                        contentValues.put(MovieContract.MovieEntry.COLUMN_RELEASE_DATE, item.releaseDate);
+                        contentValues.put(MovieContract.MovieEntry.COLUMN_BACKDROP, item.backdrop);
+                        contentValues.put(MovieContract.MovieEntry.COLUMN_SYNOPSIS, item.synopsis);
+                        contentValues.put(MovieContract.MovieEntry.COLUMN_RUNTIME, item. runtime);
+                        contentValues.put(MovieContract.MovieEntry.COLUMN_TYPE, item.type);
+                        contentValues.put(MovieContract.MovieEntry.COLUMN_FAVORITE, item.isFavorite);
+
+                        Uri uri = App.getContext().getContentResolver().insert(MovieContract.MovieEntry.CONTENT_URI, contentValues);
+
                         SugarRecord.save(item);
                     }
 
@@ -98,6 +118,8 @@ public class PopularMovieApp {
         if (!sortBy.equals(Constant.SORT_BY_FAVORITE)) {
             where = NamingHelper.toSQLNameDefault("type") + " = ? ";
             result =  SugarRecord.find(Movie.class, where, new String[] {sortBy});
+
+//            Cursor cursor = App.getContext().getContentResolver().query(MovieContract.MovieEntry.CONTENT_URI)
         } else {
             where = NamingHelper.toSQLNameDefault("isFavorite") + " = 1 ";
             result =  SugarRecord.find(Movie.class, where);

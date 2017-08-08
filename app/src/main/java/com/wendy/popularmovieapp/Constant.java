@@ -1,5 +1,7 @@
 package com.wendy.popularmovieapp;
 
+import android.net.Uri;
+
 /**
  * Created by wendy on 7/7/2017.
  */
@@ -21,11 +23,8 @@ public class Constant {
     public static final int UNFAVORITE = 0;
     public static final int FAVORITE = 1;
 
-    public static String EXTRA_MOVIE = "extra_movie";
-    public static String EXTRA_MOVIE_FAVORITE = "extra_movie_favorite";
-    public static String EXTRA_MOVIE_ISFAVORITE = "extra_movie_isfavorite";
-
-    public static int CODE_MOVIE_FAVORITE = 1;
+    public static final String AUTHORITY = "com.wendy.popularmovieapp";
+    public static final Uri BASE_CONTENT_URI = Uri.parse("content://" + AUTHORITY);
 
     public static final String SELECTED_DETAIL = "detail_selected";
     public static final int DETAIL_SYNOPSIS = 0;

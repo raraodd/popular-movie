@@ -1,6 +1,6 @@
 package com.wendy.popularmovieapp.data.api;
 
-import com.wendy.popularmovieapp.data.database.Movie;
+import com.wendy.popularmovieapp.data.Movie;
 
 import retrofit2.Call;
 import retrofit2.http.GET;

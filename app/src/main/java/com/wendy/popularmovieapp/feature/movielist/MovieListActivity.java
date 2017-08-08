@@ -3,7 +3,6 @@ package com.wendy.popularmovieapp.feature.movielist;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -14,12 +13,10 @@ import android.view.View;
 
 import com.wendy.popularmovieapp.Constant;
 import com.wendy.popularmovieapp.R;
-import com.wendy.popularmovieapp.data.database.Movie;
+import com.wendy.popularmovieapp.data.Movie;
 import com.wendy.popularmovieapp.feature.moviedetail.MovieDetailsActivity;
-import com.wendy.popularmovieapp.service.PopularMovieApp;
 import com.wendy.popularmovieapp.utils.Utils;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
