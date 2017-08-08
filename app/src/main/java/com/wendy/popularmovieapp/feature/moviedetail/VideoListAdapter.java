@@ -9,7 +9,7 @@ import android.widget.ImageView;
 
 import com.squareup.picasso.Picasso;
 import com.wendy.popularmovieapp.R;
-import com.wendy.popularmovieapp.data.database.Video;
+import com.wendy.popularmovieapp.data.Video;
 
 import java.util.List;
 

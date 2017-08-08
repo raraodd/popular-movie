@@ -1,14 +1,10 @@
 package com.wendy.popularmovieapp.service;
 
+import android.content.ContentUris;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.net.Uri;
 import android.util.Log;
-
-import com.orm.SugarRecord;
-import com.orm.query.Condition;
-import com.orm.query.Select;
-import com.orm.util.NamingHelper;
 import com.wendy.popularmovieapp.App;
 import com.wendy.popularmovieapp.BuildConfig;
 import com.wendy.popularmovieapp.Constant;
@@ -19,7 +15,11 @@ import com.wendy.popularmovieapp.data.Movie;
 import com.wendy.popularmovieapp.data.api.MovieResponse;
 import com.wendy.popularmovieapp.data.api.ReviewResponse;
 import com.wendy.popularmovieapp.data.api.VideoResponse;
+import com.wendy.popularmovieapp.data.database.MovieContentProvider;
 import com.wendy.popularmovieapp.data.database.MovieContract;
+import com.wendy.popularmovieapp.data.database.ReviewContract;
+import com.wendy.popularmovieapp.data.database.VideoContract;
+import com.wendy.popularmovieapp.utils.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -83,6 +83,7 @@ public class PopularMovieApp {
 
                     for(Movie item: newMovies) {
                         item.type = sortBy;
+                        item.runtime = item.runtime == null ? null : item.runtime+"";
 
                         ContentValues contentValues = new ContentValues();
                         contentValues.put(MovieContract.MovieEntry._ID, item.getId());
@@ -92,13 +93,11 @@ public class PopularMovieApp {
                         contentValues.put(MovieContract.MovieEntry.COLUMN_RELEASE_DATE, item.releaseDate);
                         contentValues.put(MovieContract.MovieEntry.COLUMN_BACKDROP, item.backdrop);
                         contentValues.put(MovieContract.MovieEntry.COLUMN_SYNOPSIS, item.synopsis);
-                        contentValues.put(MovieContract.MovieEntry.COLUMN_RUNTIME, item. runtime);
+                        contentValues.put(MovieContract.MovieEntry.COLUMN_RUNTIME, item.runtime);
                         contentValues.put(MovieContract.MovieEntry.COLUMN_TYPE, item.type);
                         contentValues.put(MovieContract.MovieEntry.COLUMN_FAVORITE, item.isFavorite);
 
                         Uri uri = App.getContext().getContentResolver().insert(MovieContract.MovieEntry.CONTENT_URI, contentValues);
-
-                        SugarRecord.save(item);
                     }
 
                     MovieListStatus.getInstance().notifyMovieUpdated(sortBy);
@@ -113,31 +112,48 @@ public class PopularMovieApp {
     }
 
     public List<Movie> getMovies(String sortBy) {
-        String where;
-        List<Movie> result;
+        Cursor cursor;
+        String[] mSelectionArgs;
+        String mSelection;
         if (!sortBy.equals(Constant.SORT_BY_FAVORITE)) {
-            where = NamingHelper.toSQLNameDefault("type") + " = ? ";
-            result =  SugarRecord.find(Movie.class, where, new String[] {sortBy});
-
-//            Cursor cursor = App.getContext().getContentResolver().query(MovieContract.MovieEntry.CONTENT_URI)
+            mSelection = "type = ?";
+            mSelectionArgs = new String[] {sortBy};
         } else {
-            where = NamingHelper.toSQLNameDefault("isFavorite") + " = 1 ";
-            result =  SugarRecord.find(Movie.class, where);
+            mSelection = "is_favorite = ?";
+            mSelectionArgs = new String[] {"1"};
         }
 
-        return result;
+        cursor = App.getContext().getContentResolver()
+                .query(MovieContract.MovieEntry.CONTENT_URI,
+                        null,
+                        mSelection,
+                        mSelectionArgs,
+                        MovieContract.MovieEntry._ID);
+        List<Movie> resultCursor = Utils.convertMovieCursorToList(cursor);
+
+        return resultCursor;
     }
 
     public Movie getMovieById(Long movieId) {
-        return Select.from(Movie.class)
-                .where(Condition.prop(NamingHelper.toSQLNameDefault("id")).eq(movieId))
-                .first();
+        Movie result;
+        String mSelection = "_id = " + movieId;
+        Cursor cursor = App.getContext().getContentResolver()
+                .query(MovieContract.MovieEntry.CONTENT_URI,
+                        null,
+                        mSelection,
+                        null,
+                        MovieContract.MovieEntry._ID);
+        result = Utils.convertMovieCursorToList(cursor).get(0);
+        return result;
     }
 
     public void setFavorite(int isFavorite, Long movieId) {
-        Movie movie = getMovieById(movieId);
-        movie.isFavorite = isFavorite;
-        SugarRecord.save(movie);
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(MovieContract.MovieEntry.COLUMN_FAVORITE, isFavorite);
+        String selection = "_id = " + movieId;
+
+        App.getContext().getContentResolver().update(MovieContract.MovieEntry.CONTENT_URI,
+                contentValues, selection, null);
     }
 
     public void loadMovieDetails(final long movieId) {
@@ -149,8 +165,14 @@ public class PopularMovieApp {
                     Movie movieDetails = response.body();
 
                     Movie movie = getMovieById(movieId);
-                    movie.synopsis = movieDetails.synopsis;
-                    SugarRecord.save(movie);
+                    movie.runtime = movieDetails.runtime;
+
+                    ContentValues contentValues = new ContentValues();
+                    contentValues.put(MovieContract.MovieEntry.COLUMN_RUNTIME, movie.runtime);
+                    String selection = "_id = " + movieId;
+
+                    App.getContext().getContentResolver().update(MovieContract.MovieEntry.CONTENT_URI,
+                            contentValues, selection, null);
 
                     MovieDetailsStatus.getInstance().notifyMovieUpdated();
                 }
@@ -173,7 +195,13 @@ public class PopularMovieApp {
 
                     for(Review item: reviews) {
                         item.movieId = movieId;
-                        SugarRecord.save(item);
+
+                        ContentValues contentValues = new ContentValues();
+                        contentValues.put(ReviewContract.ReviewEntry.COLUMN_MOVIE_ID, item.movieId);
+                        contentValues.put(ReviewContract.ReviewEntry.COLUMN_AUTHOR, item.author);
+                        contentValues.put(ReviewContract.ReviewEntry.COLUMN_CONTENT, item.content);
+
+                        App.getContext().getContentResolver().insert(ReviewContract.ReviewEntry.CONTENT_URI, contentValues);
                     }
 
                     MovieDetailsStatus.getInstance().notifyReviewUpdate();
@@ -188,8 +216,17 @@ public class PopularMovieApp {
     }
 
     public List<Review> getReviews(long movieId) {
-        String where = NamingHelper.toSQLNameDefault("movieId") + " = " + movieId;
-        return SugarRecord.find(Review.class, where);
+        Cursor cursor;
+        String mSelection = "movie_id = " + movieId;
+        cursor = App.getContext().getContentResolver()
+                .query(ReviewContract.ReviewEntry.CONTENT_URI,
+                        null,
+                        mSelection,
+                        null,
+                        ReviewContract.ReviewEntry._ID);
+        List<Review> resultCursor = Utils.convertReviewCursorToList(cursor);
+
+        return resultCursor;
     }
 
     public void loadVideos(final long movieId) {
@@ -202,7 +239,13 @@ public class PopularMovieApp {
 
                     for(Video item: videos) {
                         item.movieId = movieId;
-                        SugarRecord.save(item);
+
+                        ContentValues contentValues = new ContentValues();
+                        contentValues.put(VideoContract.VideoEntry.COLUMN_MOVIE_ID, item.movieId);
+                        contentValues.put(VideoContract.VideoEntry.COLUMN_TITLE, item.title);
+                        contentValues.put(VideoContract.VideoEntry.COLUMN_URL_KEY, item.urlKey);
+
+                        App.getContext().getContentResolver().insert(VideoContract.VideoEntry.CONTENT_URI, contentValues);
                     }
 
                     MovieDetailsStatus.getInstance().notifyVideoUpdate();
@@ -217,7 +260,16 @@ public class PopularMovieApp {
     }
 
     public List<Video> getVideos(long movieId) {
-        String where = NamingHelper.toSQLNameDefault("movieId") + " = " + movieId;
-        return SugarRecord.find(Video.class, where);
+        Cursor cursor;
+        String mSelection = "movie_id = " + movieId;
+        cursor = App.getContext().getContentResolver()
+                .query(VideoContract.VideoEntry.CONTENT_URI,
+                        null,
+                        mSelection,
+                        null,
+                        ReviewContract.ReviewEntry._ID);
+        List<Video> resultCursor = Utils.convertVideoCursorToList(cursor);
+
+        return resultCursor;
     }
 }

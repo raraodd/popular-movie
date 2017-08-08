@@ -30,7 +30,7 @@ public class MovieDetailsViewModel implements MovieDetailsObserver {
     }
 
     public void loadMovieDetails() {
-        if(!PopularMovieApp.getInstance().getMovieById(movieId).synopsis.equals(""))
+        if(PopularMovieApp.getInstance().getMovieById(movieId).runtime == null)
             PopularMovieApp.getInstance().loadMovieDetails(movieId);
         else
             onMovieLoaded();

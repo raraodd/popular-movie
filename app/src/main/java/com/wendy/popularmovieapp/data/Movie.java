@@ -2,14 +2,11 @@ package com.wendy.popularmovieapp.data;
 
 
 import com.google.gson.annotations.SerializedName;
-import com.orm.SugarRecord;
-import com.orm.dsl.Table;
 
 /**
  * Created by wendy on 7/7/2017.
  */
 
-@Table
 public class Movie {
 
     private Long id;
@@ -31,6 +28,10 @@ public class Movie {
     public int isFavorite;
 
     public Movie() {
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public Long getId() {

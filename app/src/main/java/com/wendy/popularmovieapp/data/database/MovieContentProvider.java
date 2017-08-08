@@ -21,8 +21,8 @@ import com.wendy.popularmovieapp.Constant;
 public class MovieContentProvider extends ContentProvider{
 
     public static final int MOVIE = 100;
-    public static final int MOVIE_WITH_ID = 101;
-    public static final int MOVIE_SORT_BY = 102;
+    public static final int REVIEW = 200;
+    public static final int VIDEO = 300;
 
     private static final UriMatcher sUriMatcher = buildUriMatcher();
 
@@ -30,7 +30,8 @@ public class MovieContentProvider extends ContentProvider{
         UriMatcher uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
 
         uriMatcher.addURI(Constant.AUTHORITY, MovieContract.PATH_MOVIE, MOVIE);
-        uriMatcher.addURI(Constant.AUTHORITY, MovieContract.PATH_MOVIE + "/#", MOVIE_WITH_ID);
+        uriMatcher.addURI(Constant.AUTHORITY, ReviewContract.PATH_REVIEW, REVIEW);
+        uriMatcher.addURI(Constant.AUTHORITY, VideoContract.PATH_VIDEO, VIDEO);
 
         return uriMatcher;
     }
@@ -54,12 +55,29 @@ public class MovieContentProvider extends ContentProvider{
         int match = sUriMatcher.match(uri);
 
         Uri returnUri;
+        long id;
 
         switch (match) {
             case MOVIE:
-                long id = db.insert(MovieContract.MovieEntry.TABLE_NAME, null, values);
+                id = db.insert(MovieContract.MovieEntry.TABLE_NAME, null, values);
                 if(id > 0) {
                     returnUri = ContentUris.withAppendedId(MovieContract.MovieEntry.CONTENT_URI, id);
+                } else {
+                    throw new SQLException("Failed to insert row into " + uri);
+                }
+                break;
+            case REVIEW:
+                id = db.insert(ReviewContract.ReviewEntry.TABLE_NAME, null, values);
+                if(id > 0) {
+                    returnUri = ContentUris.withAppendedId(ReviewContract.ReviewEntry.CONTENT_URI, id);
+                } else {
+                    throw new SQLException("Failed to insert row into " + uri);
+                }
+                break;
+            case VIDEO:
+                id = db.insert(VideoContract.VideoEntry.TABLE_NAME, null, values);
+                if(id > 0) {
+                    returnUri = ContentUris.withAppendedId(VideoContract.VideoEntry.CONTENT_URI, id);
                 } else {
                     throw new SQLException("Failed to insert row into " + uri);
                 }
@@ -91,19 +109,24 @@ public class MovieContentProvider extends ContentProvider{
                         null,
                         sortOrder);
                 break;
-            case MOVIE_SORT_BY:
-                String type = uri.getPathSegments().get(9);
-                String mSelection = "type = ?";
-                String[] mSelectionArgs = new String[] {type};
-
-                returnCursor = db.query(MovieContract.MovieEntry.TABLE_NAME,
+            case REVIEW:
+                returnCursor = db.query(ReviewContract.ReviewEntry.TABLE_NAME,
                         projection,
-                        mSelection,
-                        mSelectionArgs,
+                        selection,
+                        selectionArgs,
                         null,
                         null,
                         sortOrder);
-
+                break;
+            case VIDEO:
+                returnCursor = db.query(VideoContract.VideoEntry.TABLE_NAME,
+                        projection,
+                        selection,
+                        selectionArgs,
+                        null,
+                        null,
+                        sortOrder);
+                break;
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
@@ -115,7 +138,23 @@ public class MovieContentProvider extends ContentProvider{
 
     @Override
     public int update(@NonNull Uri uri, @Nullable ContentValues values, @Nullable String selection, @Nullable String[] selectionArgs) {
-        return 0;
+        int tasksUpdated;
+
+        int match = sUriMatcher.match(uri);
+
+        switch (match) {
+            case MOVIE:
+                tasksUpdated = mDbHelper.getWritableDatabase().update(
+                        MovieContract.MovieEntry.TABLE_NAME, values, selection, selectionArgs);
+                break;
+            default:
+                throw new UnsupportedOperationException("Unknown uri: " + uri);
+        }
+        if (tasksUpdated != 0) {
+            getContext().getContentResolver().notifyChange(uri, null);
+        }
+
+        return tasksUpdated;
     }
 
     @Override

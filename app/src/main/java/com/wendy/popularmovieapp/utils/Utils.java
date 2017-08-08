@@ -1,12 +1,22 @@
 package com.wendy.popularmovieapp.utils;
 
 import android.content.Context;
+import android.database.Cursor;
 import android.util.DisplayMetrics;
+
+import com.wendy.popularmovieapp.data.Movie;
+import com.wendy.popularmovieapp.data.Review;
+import com.wendy.popularmovieapp.data.Video;
+import com.wendy.popularmovieapp.data.database.MovieContract;
+import com.wendy.popularmovieapp.data.database.ReviewContract;
+import com.wendy.popularmovieapp.data.database.VideoContract;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by wendy on 7/7/2017.
@@ -64,6 +74,64 @@ public class Utils {
 
             return timeToDisplay;
         }
+    }
+
+    public static List<Movie> convertMovieCursorToList(Cursor cursor) {
+        List<Movie> result = new ArrayList<>();
+
+        if(cursor != null && cursor.getCount() > 0) {
+            cursor.moveToFirst();
+            do {
+                Movie movie = new Movie();
+                movie.setId(cursor.getLong(cursor.getColumnIndex(MovieContract.MovieEntry._ID)));
+                movie.rating = cursor.getFloat(cursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_RATING));
+                movie.title = cursor.getString(cursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_TITLE));
+                movie.poster = cursor.getString(cursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_POSTER));
+                movie.releaseDate = cursor.getString(cursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_RELEASE_DATE));
+                movie.backdrop = cursor.getString(cursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_BACKDROP));
+                movie.synopsis = cursor.getString(cursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_SYNOPSIS));
+                movie.runtime = cursor.getString(cursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_RUNTIME));
+                movie.type = cursor.getString(cursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_TYPE));
+                movie.isFavorite = cursor.getInt(cursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_FAVORITE));
+                result.add(movie);
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        return result;
+    }
+
+    public static List<Review> convertReviewCursorToList(Cursor cursor) {
+        List<Review> result = new ArrayList<>();
+
+        if(cursor != null && cursor.getCount() > 0) {
+            cursor.moveToFirst();
+            do {
+                Review review = new Review();
+                review.movieId = cursor.getLong(cursor.getColumnIndex(ReviewContract.ReviewEntry.COLUMN_MOVIE_ID));
+                review.author = cursor.getString(cursor.getColumnIndex(ReviewContract.ReviewEntry.COLUMN_AUTHOR));
+                review.content = cursor.getString(cursor.getColumnIndex(ReviewContract.ReviewEntry.COLUMN_CONTENT));
+                result.add(review);
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        return result;
+    }
+
+    public static List<Video> convertVideoCursorToList(Cursor cursor) {
+        List<Video> result = new ArrayList<>();
+
+        if(cursor != null && cursor.getCount() > 0) {
+            cursor.moveToFirst();
+            do {
+                Video video = new Video();
+                video.movieId = cursor.getLong(cursor.getColumnIndex(VideoContract.VideoEntry.COLUMN_MOVIE_ID));
+                video.title = cursor.getString(cursor.getColumnIndex(VideoContract.VideoEntry.COLUMN_TITLE));
+                video.urlKey = cursor.getString(cursor.getColumnIndex(VideoContract.VideoEntry.COLUMN_URL_KEY));
+                result.add(video);
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        return result;
     }
 
 }

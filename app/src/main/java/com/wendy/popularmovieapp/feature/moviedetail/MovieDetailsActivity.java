@@ -1,13 +1,16 @@
 package com.wendy.popularmovieapp.feature.moviedetail;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.support.v4.app.ShareCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
@@ -16,7 +19,6 @@ import android.widget.TextView;
 import com.squareup.picasso.Picasso;
 import com.wendy.popularmovieapp.Constant;
 import com.wendy.popularmovieapp.R;
-import com.wendy.popularmovieapp.service.MovieListStatus;
 import com.wendy.popularmovieapp.data.Movie;
 import com.wendy.popularmovieapp.data.Review;
 import com.wendy.popularmovieapp.data.Video;
@@ -111,9 +113,12 @@ public class MovieDetailsActivity extends AppCompatActivity implements
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.share_movie, menu);
+        return true;
     }
+
 
     private void setToolBar() {
         getSupportActionBar().setTitle(viewModel.getTitleAndYear());
@@ -164,7 +169,7 @@ public class MovieDetailsActivity extends AppCompatActivity implements
         rvReview.setAdapter(reviewListAdapter);
     }
 
-    private void setVideoAdapater(List<Video> videos) {
+    private void setVideoAdapter(List<Video> videos) {
         videoListAdapter = new VideoListAdapter(mContext, videos, this);
         rvVideoList.setAdapter(videoListAdapter);
     }
@@ -173,6 +178,9 @@ public class MovieDetailsActivity extends AppCompatActivity implements
     public boolean onOptionsItemSelected(MenuItem item) {
         if(item.getItemId() == android.R.id.home) {
             finish();
+        }
+        if(item.getItemId() == R.id.action_share) {
+            shareMovie();
         }
         return super.onOptionsItemSelected(item);
     }
@@ -206,7 +214,7 @@ public class MovieDetailsActivity extends AppCompatActivity implements
 
     @Override
     public void updateVideo(List<Video> videos) {
-        setVideoAdapater(viewModel.videos);
+        setVideoAdapter(viewModel.videos);
     }
 
     @Override
@@ -277,6 +285,23 @@ public class MovieDetailsActivity extends AppCompatActivity implements
         }
     }
 
+    private void shareMovie() {
+        String mimeType = "text/plain";
+        String title = viewModel.movie.title;
+        String textToShare;
+        if(viewModel.videos.size() > 0) {
+            textToShare = "Let's checkout new trailer " + viewModel.movie.title + " http://www.youtube.com/watch?v=" + viewModel.videos.get(0).urlKey;
+        } else {
+            textToShare = "Sorry there is no trailer for this movie";
+        }
+
+        ShareCompat.IntentBuilder
+                .from(this)
+                .setType(mimeType)
+                .setChooserTitle(title)
+                .setText(textToShare)
+                .startChooser();
+    }
     @Override
     public void onVideoListClick(int clickedVideoIndex) {
         Video video = viewModel.videos.get(clickedVideoIndex);

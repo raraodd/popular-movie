@@ -79,7 +79,7 @@ public class MovieListActivity extends AppCompatActivity
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.main, menu);
+        inflater.inflate(R.menu.sort_movie, menu);
 
         if(selectedSort.equals(Constant.SORT_BY_POPULARITY)) {
             menu.getItem(Constant.POPULARITY).setChecked(true);
